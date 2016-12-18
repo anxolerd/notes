@@ -1,0 +1,5 @@
+.vagga/
+.env/
+*.pyc
+*.orig
+__pycache__/
