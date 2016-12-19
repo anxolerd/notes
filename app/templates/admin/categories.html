@@ -33,7 +33,16 @@
     {% endfor %}
   </ul>
   <nav>
-
+    {% if offset > 0 %}
+      <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+         href="/admin/categories?limit={{ limit }}&offset={{ offset - limit }}"
+      >Previous</a>
+    {% endif %}
+    {% if categories|length == limit %}
+      <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+         href="/admin/categories?limit={{ limit }}&offset={{ offset + limit }}"
+      >Next</a>
+    {% endif %}
   </nav>
   <a href="/admin/category/create"
      class="fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored mdl-js-ripple-effect ">

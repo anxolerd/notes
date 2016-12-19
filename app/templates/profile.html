@@ -9,7 +9,7 @@
   </style>
   <form method="POST" class="demo-card-wide mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
-      <h2 class="mdl-card__title-text">Log into your account</h2>
+      <h2 class="mdl-card__title-text">Edit your profile</h2>
     </div>
     <div class="mdl-card__supporting-text">
       <div
@@ -31,7 +31,7 @@
       </div>
       <div
         class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.password2.errors %}is-invalid{% endif %}">
-        <input class="mdl-textfield__input" type="password" id="password2">
+        <input class="mdl-textfield__input" type="password" id="password2" name="password2">
         <label class="mdl-textfield__label" for="password2">Repeat password</label>
         {% if form.password2.errors %}
           <span class="mdl-textfield__error">{{ form.password2.errors[0] }}</span>
@@ -63,6 +63,13 @@
         {% if form.last_name.errors %}
           <span class="mdl-textfield__error">{{ form.last_name.errors[0] }}</span>
         {% endif %}
+      </div>
+      <div>
+        y =
+        {% for coef in auth_user.polynomial_coef %}
+          {% if not loop.first %} + {% endif %}
+          {{ coef }}x<sup>{{ loop.revindex0 }}</sup>
+        {% endfor %}
       </div>
     </div>
     <div class="mdl-card__actions mdl-card--border">

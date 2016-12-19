@@ -17,10 +17,10 @@ async def index(request: Request):
 @authorize(['admin'])
 @template('admin/categories.html')
 async def categories(request: Request):
-    limit = request.rel_url.query.get('limit', 10)
-    offset = request.rel_url.query.get('offset', 0)
-    categories_ = await category_dao.get_all(request.app, limit, offset)
-    return {'categories': categories_, 'limit': limit, 'offset': offset}
+    limit = request.rel_url.query.get('limit', '10')
+    offset = request.rel_url.query.get('offset', '0')
+    categories_ = await category_dao.get_all(request.app, int(limit), int(offset))
+    return {'categories': categories_, 'limit': int(limit), 'offset': int(offset)}
 
 
 @authorize(['admin'])

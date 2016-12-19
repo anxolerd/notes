@@ -1,0 +1,49 @@
+{% extends 'notes/base.html' %}
+
+{% block title %}Write a note{% endblock %}
+{% block contents %}
+  <style>
+    .demo-card-wide {
+      margin: 0 auto;
+    }
+  </style>
+  <form method="POST" class="demo-card-wide mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      <h2 class="mdl-card__title-text">Write a note</h2>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.title.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="text" id="title" name="title"
+               value="{{ form.title.data or '' }}">
+        <label class="mdl-textfield__label" for="title">Category title</label>
+        {% if form.title.errors %}
+          <span class="mdl-textfield__error">{{ form.title.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+    <div
+      class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.text.errors %}is-invalid{% endif %}">
+      <textarea class="mdl-textfield__input" type="text" rows= "3" id="text" name="text">{{ form.text.data or '' }}</textarea>
+      <label class="mdl-textfield__label" for="text">Your note...</label>
+    {% if form.text.errors %}
+      <span class="mdl-textfield__error">{{ form.text.errors[0] }}</span>
+    {% endif %}
+    </div>
+
+    <div>
+      {{ form.category.label }}
+      {{ form.category() }}
+      {% if form.category.errors %}
+        <span class="mdl-textfield__error">{{ form.category.errors[0] }}</span>
+      {% endif %}
+    </div>
+
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+      <button type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Save
+      </button>
+    </div>
+  </form>
+{% endblock %}

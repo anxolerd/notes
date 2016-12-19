@@ -1,0 +1,14 @@
+{% extends 'notes/base.html' %}
+
+{% block title %}Admin{% endblock %}
+{% block contents %}
+  <ul class='mdl-list'>
+    {% for category in categories %}
+      <li class="mdl-list__item">
+        <a href="/notes/{{ category.name }}/notes">
+          <span class="mdl-list__item-primary-content">{{ category.name }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

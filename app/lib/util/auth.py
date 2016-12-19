@@ -16,7 +16,7 @@ def authorize(roles):
             user = await get_auth_user(request)
             if not user:
                 return HTTPFound('/login')
-            if not set(user.roles).intersection(set(roles)):
+            if roles and not set(user.roles).intersection(set(roles)):
                 return HTTPForbidden()
             return await func(request)
         return __decorated

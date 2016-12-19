@@ -5,8 +5,9 @@ from aiohttp.web import Request
 from aiohttp.web_exceptions import HTTPFound
 from aiohttp_jinja2 import template
 
-from app.forms.root import LoginForm
-from app.lib.util.auth import get_session_id, get_auth_user
+import app.dao.user as user_dao
+from app.forms.root import LoginForm, ProfileForm
+from app.lib.util.auth import get_session_id, get_auth_user, authorize
 from app.lib.util.auth import login as login_user
 from app.lib.util.session import create_session, terminate_session
 
@@ -50,3 +51,21 @@ async def logout(request):
     resp = HTTPFound('/')
     resp.del_cookie('X-SESSION-ID')
     return resp
+
+
+@authorize([])
+@template('profile.html')
+async def profile(request):
+    user = await get_auth_user(request)
+    form = ProfileForm(await request.post(), obj=user)
+    if request.method == 'POST' and form.validate():
+        user.username = form.username.data
+        user.password = form.password.data
+        user.first_name = form.first_name.data
+        user.middle_name = form.middle_name.data
+        user.last_name = form.last_name.data
+
+        await user_dao.update(request.app, user)
+    return {
+        'form': form,
+    }

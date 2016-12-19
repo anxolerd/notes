@@ -8,6 +8,7 @@ from aiohttp_jinja2 import setup as setup_jinja2
 from jinja2 import FileSystemLoader
 
 import app.handlers.admin as admin_handler
+import app.handlers.notes as notes_handler
 import app.handlers.root as root_handler
 from app.ctx_processors import user_processor
 
@@ -25,6 +26,8 @@ async def init_app(loop):
     app.router.add_route('GET', '/login', root_handler.login)
     app.router.add_route('POST', '/login', root_handler.login)
     app.router.add_route('GET', '/logout', root_handler.logout)
+    app.router.add_route('GET', '/profile', root_handler.profile)
+    app.router.add_route('POST', '/profile', root_handler.profile)
 
     app.router.add_route('GET', '/admin', admin_handler.index)
     app.router.add_route('GET', '/admin/', admin_handler.index)
@@ -33,6 +36,13 @@ async def init_app(loop):
     app.router.add_route('POST', '/admin/category/create', admin_handler.create_category)
     app.router.add_route('GET', '/admin/category/{id:\d+}/edit', admin_handler.edit_category)
     app.router.add_route('POST', '/admin/category/{id:\d+}/edit', admin_handler.edit_category)
+
+    app.router.add_route('GET', '/notes', notes_handler.index)
+    app.router.add_route('GET', '/notes/', notes_handler.index)
+    app.router.add_route('GET', '/notes/{cat}/notes', notes_handler.category)
+    app.router.add_route('GET', '/notes/create', notes_handler.create_note)
+    app.router.add_route('POST', '/notes/create', notes_handler.create_note)
+    app.router.add_route('GET', '/notes/{id:\d+}/read', notes_handler.read)
 
     setup_jinja2(
         app,
