@@ -8,6 +8,7 @@ containers:
       - !Py3Install
         - pip
         - aiohttp
+        - aiohttp_debugtoolbar
         - aiohttp_jinja2
         - aioredis
         - asyncpg
@@ -22,6 +23,8 @@ containers:
         python-exe: python3.5
       - !Install
         - python3-dev
+      - !Py3Install
+        - setuptools
       - !Py3Requirements requirements.txt
     environ:
       LC_ALL: C.UTF-8

@@ -1,4 +1,5 @@
 aiohttp==1.2.0
+aiohttp-debugtoolbar==0.3.0
 aiohttp-jinja2==0.13.0
 aioredis==0.2.9
 async-timeout==1.1.0

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+{% block contents %}
+  <style>
+    .demo-card-wide {
+      margin: 0 auto;
+    }
+  </style>
+  <form method="POST" class="demo-card-wide mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      <h2 class="mdl-card__title-text">Log into your account</h2>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.username.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="text" id="username" name="username"
+               value="{{ form.username.data or '' }}">
+        <label class="mdl-textfield__label" for="username">Username</label>
+        {% if form.username.errors %}
+          <span class="mdl-textfield__error">{{ form.username.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.password.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="password" id="password" name="password">
+        <label class="mdl-textfield__label" for="password">Password</label>
+        {% if form.password.errors %}
+          <span class="mdl-textfield__error">{{ form.password.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.password2.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="password" id="password2">
+        <label class="mdl-textfield__label" for="password2">Repeat password</label>
+        {% if form.password2.errors %}
+          <span class="mdl-textfield__error">{{ form.password2.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.first_name.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="text" id="first_name" name="first_name"
+               value="{{ form.first_name.data or '' }}">
+        <label class="mdl-textfield__label" for="first_name">First name</label>
+        {% if form.first_name.errors %}
+          <span class="mdl-textfield__error">{{ form.first_name.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.middle_name.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="text" id="middle_name" name="middle_name"
+               value="{{ form.middle_name.data or '' }}">
+        <label class="mdl-textfield__label" for="middle_name">Middle name</label>
+        {% if form.middle_name.errors %}
+          <span class="mdl-textfield__error">{{ form.middle_name.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label {% if form.last_name.errors %}is-invalid{% endif %}">
+        <input class="mdl-textfield__input" type="text" id="last_name" name="last_name"
+               value="{{ form.last_name.data or '' }}">
+        <label class="mdl-textfield__label" for="last_name">Last name</label>
+        {% if form.last_name.errors %}
+          <span class="mdl-textfield__error">{{ form.last_name.errors[0] }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+      <button type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Update
+      </button>
+    </div>
+  </form>
+{% endblock %}

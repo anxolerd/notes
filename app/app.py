@@ -1,8 +1,10 @@
+import aiohttp_debugtoolbar
 import aioredis
 import asyncpg
 from aiohttp.web import Application
-from aiohttp_jinja2 import setup as setup_jinja2
+from aiohttp_debugtoolbar import toolbar_middleware_factory
 from aiohttp_jinja2 import request_processor
+from aiohttp_jinja2 import setup as setup_jinja2
 from jinja2 import FileSystemLoader
 
 import app.handlers.admin as admin_handler
@@ -14,7 +16,7 @@ async def init_app(loop):
     host = '0.0.0.0'
     port = 5000
 
-    app = Application(loop=loop)
+    app = Application(loop=loop, middlewares=[toolbar_middleware_factory])
     # Create a database connection pool
     app['pool'] = await asyncpg.create_pool(database='vagga', user='vagga', port=5433)
     app['redis_pool'] = await aioredis.create_pool(('localhost', 6379))
@@ -24,13 +26,21 @@ async def init_app(loop):
     app.router.add_route('POST', '/login', root_handler.login)
     app.router.add_route('GET', '/logout', root_handler.logout)
 
+    app.router.add_route('GET', '/admin', admin_handler.index)
     app.router.add_route('GET', '/admin/', admin_handler.index)
+    app.router.add_route('GET', '/admin/categories', admin_handler.categories)
+    app.router.add_route('GET', '/admin/category/create', admin_handler.create_category)
+    app.router.add_route('POST', '/admin/category/create', admin_handler.create_category)
+    app.router.add_route('GET', '/admin/category/{id:\d+}/edit', admin_handler.edit_category)
+    app.router.add_route('POST', '/admin/category/{id:\d+}/edit', admin_handler.edit_category)
 
     setup_jinja2(
         app,
         context_processors=[user_processor, request_processor],
         loader=FileSystemLoader('app/templates')
     )
+
+    aiohttp_debugtoolbar.setup(app, intercept_redirects=False)
 
     handler = app.make_handler()
     srv = await loop.create_server(handler, host, port)

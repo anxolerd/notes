@@ -1,0 +1,42 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block contents %}
+  <style>
+    .fab {
+      position: fixed;
+      bottom: 8px;
+      right: 8px;
+    }
+  </style>
+  <ul class="demo-list-three mdl-list">
+    {% for category in categories %}
+      <li class="mdl-list__item mdl-list__item--three-line">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">loyalty</i>
+        <span>{{ category.name }}</span>
+        <span class="mdl-list__item-text-body">
+          Roles which can view:
+          {% for role in category.allowed_roles %}
+            <span class="mdl-chip">
+              <span class="mdl-chip__text">{{ role }}</span>
+            </span>
+          {% endfor %}
+        </span>
+      </span>
+        <span class="mdl-list__item-secondary-content">
+      <a class="mdl-list__item-secondary-action" href="/admin/category/{{ category.id }}/edit"><i
+        class="material-icons">edit</i></a>
+    </span>
+      </li>
+    {% endfor %}
+  </ul>
+  <nav>
+
+  </nav>
+  <a href="/admin/category/create"
+     class="fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored mdl-js-ripple-effect ">
+    <i class="material-icons">add</i>
+  </a>
+{% endblock %}

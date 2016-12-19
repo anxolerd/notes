@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.red-amber.min.css">
   <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
   <title>{% block title %}{% endblock %}</title>
 </head>
@@ -28,7 +29,7 @@
     </div>
   </header>
   <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">Title</span>
+    <span class="mdl-layout-title">Admin</span>
     <nav class="mdl-navigation">
       {% if 'admin' in auth_user.roles %}
         <a class="mdl-navigation__link" href="/admin">Admin</a>
