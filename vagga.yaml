@@ -1,7 +1,125 @@
 containers:
-  base:
-    setup: 
+  app-freezer:
+    setup:
       - !Alpine v3.4
+      - !PipConfig
+        dependencies: true
+        python-exe: python3.5
+      - !Py3Install
+        - pip
+        - aiohttp
+        - aiohttp_jinja2
+        - aioredis
+        - asyncpg
+        - click
+        - pycrypto
+        - wtforms
 
+  app:
+    setup:
+      - !Ubuntu xenial
+      - !PipConfig
+        python-exe: python3.5
+      - !Install
+        - python3-dev
+      - !Py3Requirements requirements.txt
+    environ:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+
+  redis:
+    setup:
+      - !Alpine v3.4
+      - !Install
+        - redis
+
+  postgres:
+    setup:
+      - !Ubuntu xenial
+      - !Sh |
+          addgroup --system --gid 200 postgres
+          adduser --uid 200 --system --home /data --no-create-home \
+              --shell /bin/bash --group --gecos "PostgreSQL administrator" \
+              postgres
+      - !Install 
+        - postgresql-9.5
+      - !EnsureDir /data
+    environ:
+      PG_PORT: 5433
+      PG_DB: vagga
+      PGDATA: /data
+      PG_BIN: /usr/lib/postgresql/9.5/bin
+    volumes:
+      /data: !Persistent
+        name: postgres
+        owner-uid: 200
+        owner-gid: 200
+        init-command: _pg_init
+      /run: !Tmpfs
+        subdirs: postgresql: { mode: 0o777 }
+
+commands:
+  _pg_init: !Command
+    container: postgres
+    user-id: 200
+    group-id: 200
+    run: |
+      set -ex
+      ls -la /data
+      $PG_BIN/pg_ctl initdb
+      $PG_BIN/pg_ctl -w -o '-F --port=$PG_PORT -k /tmp' start
+      $PG_BIN/createuser -h 127.0.0.1 -p $PG_PORT vagga
+      $PG_BIN/createdb -h 127.0.0.1 -p $PG_PORT $PG_DB -O vagga
+
+      for f in $(ls migrations) ; do
+        psql postgres://vagga:vagga@127.0.0.1:$PG_PORT/$PG_DB -f "migrations/$f"
+      done
+
+      for f in $(ls fixtures) ; do
+        psql postgres://vagga:vagga@127.0.0.1:$PG_PORT/$PG_DB -f "fixtures/$f"
+      done
+
+      $PG_BIN/pg_ctl stop
+
+  postgres: &cmd-postgres !Command
+    description: run postgres database
+    container: postgres
+    user-id: 200
+    group-id: 200
+    run: |
+      trap "$PG_BIN/pg_ctl -w stop; trap - INT; kill -INT $$" INT
+      $PG_BIN/pg_ctl -w -o '-F --port=$PG_PORT -k /tmp' start
+      sleep infinity
+
+  psql: !Command
+    description: psql into postgres database
+    container: postgres
+    run: psql postgres://vagga:vagga@127.0.0.1:$PG_PORT/$PG_DB
+
+  run-app: &cmd-app !Command
+    description: run application
+    container: app
+    run: python3 run.py
+
+  redis-cli: !Command
+    description: run redis command-line interface
+    container: redis
+    run: [redis-cli]
+
+  redis: &cmd-redis !Command
+    description: run redis database
+    container: redis
+    run: redis-server --daemonize no
+
+  run: !Supervise
+    children:
+      app: *cmd-app
+      redis: *cmd-redis
+      postgres: *cmd-postgres
+
+  freeze: !Command
+    description: freeze project requirements
+    container: app-freezer
+    run: pip freeze > requirements.txt
 
 #  vim: set ts=2 sw=2 sts=2 tw=0 et :
