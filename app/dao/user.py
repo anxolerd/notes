@@ -95,3 +95,26 @@ async def create(app, user):
                 user.polynomial_coef,
                 user.roles,
             )
+
+
+async def get_users_by_ids(app, ids):
+    async with app['pool'].acquire() as conn:
+        async with conn.transaction():
+            stmt = await conn.prepare('''
+                select
+                    id,
+                    username,
+                    password,
+                    first_name,
+                    middle_name,
+                    last_name,
+                    polynomial_coef,
+                    roles
+                from "user"
+                where id = any($1)
+            ''')
+            results = await stmt.fetch(ids)
+    return {
+        result['id']: User(**dict(result.items()))
+        for result in results
+    }

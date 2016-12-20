@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class User:
     def __init__(self, **kwargs):
         self.id = kwargs.get('id')
@@ -24,3 +26,13 @@ class Note:
         self.category_id = kwargs.get('category_id')
         self.title = kwargs.get('title')
         self.text = kwargs.get('text')
+
+
+class SecurityLog:
+    def __init__(self, **kwargs):
+        self.id = kwargs.get('id')
+        self.date_created = kwargs.get('date_created')
+        self.user_id = kwargs.get('user_id')
+        self.event_type = kwargs.get('event_type')
+        self.is_safe = kwargs.get('is_safe')
+        self.metadata = kwargs.get('metadata')

@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Security log{% endblock %}
+{% block contents %}
+  <style>
+  .red-row {
+    background: #ffaaaa;
+  }
+  </style>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Timestamp</th>
+      <th class="mdl-data-table__cell--non-numeric">Who</th>
+      <th class="mdl-data-table__cell--non-numeric">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for r in records %}
+      <tr class="{% if not r.is_safe %}red-row{% endif %}">
+        <td class="mdl-data-table__cell--non-numeric">{{ r.date_created }}</td>
+        <td class="mdl-data-table__cell--non-numeric">{{ users_map[r.user_id].first_name|safe }} {{ users_map[r.user_id].last_name|safe }}</td>
+        <td class="mdl-data-table__cell--non-numeric">{{ titles_map[r.event_type] }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

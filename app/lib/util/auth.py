@@ -5,6 +5,7 @@ from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPForbidden
 
 import app.dao.user as user_dao
+import app.dao.security_log as security_log_dao
 
 
 log = logging.getLogger(__name__)
@@ -43,12 +44,16 @@ async def login(app, username, password, key, answer):
     log.info('login attempt %s', username)
     user = await user_dao.get_by_username(app, username)
     log.info('user is %s', user)
-    if user and user.password == password:
-        log.info('password correct')
-        func = build_polynom(user.polynomial_coef)
-        if func(key) == answer:
-            return user
-        log.error('wrong answer ex %s act %s key %s', func(key), answer, key)
+    if user:
+        if user.password == password:
+            log.info('password correct')
+            func = build_polynom(user.polynomial_coef)
+            if func(key) == answer:
+                await security_log_dao.create_login_record(app, user.id)
+                return user
+            await security_log_dao.create_bad_answer(app, user.id)
+        else:
+            await security_log_dao.create_bad_password(app, user.id)
     return None
 
 
